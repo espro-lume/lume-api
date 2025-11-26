@@ -43,6 +43,10 @@ public class User {
 
     public User() {}
 
+    public void addCourse(Course course) {
+        courses.add(course);
+    }
+
     public User(String name, String email, String password, Role role) {
         this.name = name;
         this.email = email;

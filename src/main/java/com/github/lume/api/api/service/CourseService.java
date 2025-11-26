@@ -1,33 +1,40 @@
 package com.github.lume.api.api.service;
 
+import com.github.lume.api.api.dto.course.AddUserInCourseRequestDTO;
 import com.github.lume.api.api.dto.course.CourseRequestDTO;
 import com.github.lume.api.api.dto.course.CourseResponseDTO;
 import com.github.lume.api.api.dto.lesson.LessonRequestDTO;
 import com.github.lume.api.api.dto.lesson.LessonResponseDTO;
 import com.github.lume.api.api.dto.module.ModuleRequestDTO;
 import com.github.lume.api.api.dto.module.ModuleResponseDTO;
+import com.github.lume.api.api.exception.order.CourseNotFoundException;
+import com.github.lume.api.api.exception.user.UserNotFoundException;
 import com.github.lume.api.api.model.Course;
 import com.github.lume.api.api.model.Lesson;
+import com.github.lume.api.api.model.User;
 import com.github.lume.api.api.repository.CourseRepository;
 import com.github.lume.api.api.repository.LessonRepository;
 import com.github.lume.api.api.repository.ModuleRepository;
-import org.jspecify.annotations.Nullable;
+import com.github.lume.api.api.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import com.github.lume.api.api.model.Module;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CourseService {
     private final CourseRepository courseRepository;
     private final ModuleRepository moduleRepository;
     private final LessonRepository lessonRepository;
+    private final UserRepository userRepository;
 
-    public CourseService(CourseRepository courseRepository,  ModuleRepository moduleRepository, LessonRepository lessonRepository) {
+    public CourseService(CourseRepository courseRepository, ModuleRepository moduleRepository, LessonRepository lessonRepository, UserRepository userRepository) {
         this.courseRepository = courseRepository;
         this.moduleRepository = moduleRepository;
         this.lessonRepository = lessonRepository;
+        this.userRepository = userRepository;
     }
 
     public void create(CourseRequestDTO request) {
@@ -94,5 +101,22 @@ public class CourseService {
                                 )).toList()
                 ))
                 .toList();
+    }
+
+    public void addUserInCourse(String userId, AddUserInCourseRequestDTO courseId) {
+        Optional<Course> courseOpt = Optional.of(courseRepository.findById(Long.parseLong(courseId.courseId()))
+                .orElseThrow(() -> new CourseNotFoundException("Curso não encontrado")));
+
+        Optional<User> userOpt = Optional.of(userRepository.findById(Long.parseLong(userId))
+                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado")));
+
+        Course course = courseOpt.get();
+        User user = userOpt.get();
+
+        course.addUser(user);
+        user.addCourse(course);
+
+        courseRepository.save(course);
+        userRepository.save(user);
     }
 }

@@ -1,7 +1,7 @@
 package com.github.lume.api.api.exception;
 
 import com.github.lume.api.api.dto.error.ErrorMessage;
-import com.github.lume.api.api.exception.order.InvalidOrderDataException;
+import com.github.lume.api.api.exception.order.InvalidCourseDataException;
 import com.github.lume.api.api.exception.user.InvalidUserDataException;
 import com.github.lume.api.api.exception.user.UserNotFoundException;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +23,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(404).body(errorResponse);
     }
 
-    @ExceptionHandler(InvalidOrderDataException.class)
-    public ResponseEntity<ErrorMessage> handleInvalidOrderDataException(InvalidOrderDataException error) {
+    @ExceptionHandler(InvalidCourseDataException.class)
+    public ResponseEntity<ErrorMessage> handleInvalidOrderDataException(InvalidCourseDataException error) {
         ErrorMessage errorResponse = new ErrorMessage(error.getMessage());
         return ResponseEntity.status(400).body(errorResponse);
     }

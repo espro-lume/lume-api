@@ -43,6 +43,10 @@ public class Course {
 
     public Course() {}
 
+    public void addUser(User user) {
+        users.add(user);
+    }
+
     public Course(String name, String description, Double evaluation, Integer workload, byte[] cover) {
         this.name = name;
         this.description = description;
