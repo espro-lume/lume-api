@@ -1,7 +1,8 @@
 package com.github.lume.api.api.validations.user;
 
 import com.github.lume.api.api.dto.user.UserRequestDTO;
-import com.github.lume.api.api.exception.InvalidUserDataException;
+import com.github.lume.api.api.dto.user.login.LoginRequestDTO;
+import com.github.lume.api.api.exception.user.InvalidUserDataException;
 import com.github.lume.api.api.repository.UserRepository;
 import com.github.lume.api.api.validations.ValidationErrorRegistry;
 import org.springframework.stereotype.Component;
@@ -27,6 +28,27 @@ public class DefaultUserValidator implements UserValidator, NameValidator, Email
         }
 
         validatePassword(request.password());
+
+        // retorna caso não haja erros na lista
+        if (!ValidationErrorRegistry.hasErrors()) {
+            return;
+        }
+
+        // captura a mensagem de erro
+        String errorMessage = ValidationErrorRegistry.getErrorMessage();
+
+        throw new InvalidUserDataException(errorMessage);
+    }
+
+    @Override
+    public void validateLogin(LoginRequestDTO request) {
+        if(request.email().isEmpty() || request.email() == null) {
+            ValidationErrorRegistry.addError("Informe o e-mail.");
+        }
+
+        if(request.password().isEmpty() || request.password() == null) {
+            ValidationErrorRegistry.addError("Informe a senha.");
+        }
 
         // retorna caso não haja erros na lista
         if (!ValidationErrorRegistry.hasErrors()) {

@@ -1,4 +1,4 @@
-package com.github.lume.api.api.exception;
+package com.github.lume.api.api.exception.user;
 
 public class InvalidUserDataException extends RuntimeException {
     public InvalidUserDataException(String message) {

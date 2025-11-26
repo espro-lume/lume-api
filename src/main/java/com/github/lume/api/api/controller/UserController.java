@@ -17,7 +17,7 @@ public class UserController {
     public final UserService userService;
 
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO request) {
-        LoginResponseDTO response =  userService.login(request);
+        LoginResponseDTO response = userService.login(request);
         return ResponseEntity.ok(response);
     }
 

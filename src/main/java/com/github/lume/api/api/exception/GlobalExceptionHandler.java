@@ -1,8 +1,9 @@
 package com.github.lume.api.api.exception;
 
 import com.github.lume.api.api.dto.error.ErrorMessage;
+import com.github.lume.api.api.exception.user.InvalidUserDataException;
+import com.github.lume.api.api.exception.user.UserNotFoundException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -13,5 +14,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorMessage> handleInvalidUserDataException(InvalidUserDataException error) {
         ErrorMessage errorResponse = new ErrorMessage(error.getMessage());
         return ResponseEntity.status(400).body(errorResponse);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorMessage> handleUserNotFoundException(InvalidUserDataException error) {
+        ErrorMessage errorResponse = new ErrorMessage(error.getMessage());
+        return ResponseEntity.status(404).body(errorResponse);
     }
 }

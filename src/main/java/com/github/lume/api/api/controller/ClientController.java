@@ -4,7 +4,6 @@ import com.github.lume.api.api.dto.user.UserRequestDTO;
 import com.github.lume.api.api.dto.user.UserResponseDTO;
 import com.github.lume.api.api.service.ClientService;
 import com.github.lume.api.api.validations.user.DefaultUserValidator;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

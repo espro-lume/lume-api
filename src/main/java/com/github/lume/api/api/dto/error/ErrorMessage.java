@@ -1,6 +1,5 @@
 package com.github.lume.api.api.dto.error;
 
-import com.github.lume.api.api.exception.InvalidUserDataException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

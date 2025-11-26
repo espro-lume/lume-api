@@ -23,4 +23,9 @@ public class AdminController {
     public ResponseEntity<UserResponseDTO> create(@RequestBody UserRequestDTO request) {
         return ResponseEntity.ok(adminService.createAdmin(request));
     }
+
+//    public ResponseEntity<?> addCourse() {
+//
+//    }
+
 }
