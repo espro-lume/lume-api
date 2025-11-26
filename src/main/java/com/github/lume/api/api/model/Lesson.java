@@ -17,6 +17,19 @@ public class Lesson {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    private String description;
+
+    @Column(nullable = true)
+    private byte[] file;
+
+    @Column(nullable = true)
+    private String url;
+
+    @ManyToOne
+    @JoinColumn(name = "module_id", nullable = false)
+    private Module module;
+
     public Lesson() {
     }
 
