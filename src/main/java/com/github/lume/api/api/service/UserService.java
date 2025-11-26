@@ -16,22 +16,24 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final DefaultUserValidator defaultUserValidator;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, DefaultUserValidator defaultUserValidator) {
+    public UserService(UserRepository userRepository, DefaultUserValidator defaultUserValidator, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.defaultUserValidator = defaultUserValidator;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public LoginResponseDTO login(LoginRequestDTO request) {
         defaultUserValidator.validateLogin(request);
 
-
         User user = userRepository.findByEmail(request.email()).orElseThrow(() -> new InvalidUserDataException("Usuário ou senha inválidos."));
 
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        boolean validPassword = passwordEncoder.matches(request.password(), user.getPassword());
+        if (!validPassword) {
+            throw new InvalidUserDataException("Email e/ou senha inválidos");
+        }
 
-
-        return null;
-
+        return LoginResponseDTO.fromEntity(user);
     }
 }
