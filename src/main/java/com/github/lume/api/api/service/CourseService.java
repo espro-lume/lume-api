@@ -1,13 +1,17 @@
 package com.github.lume.api.api.service;
 
 import com.github.lume.api.api.dto.course.CourseRequestDTO;
+import com.github.lume.api.api.dto.course.CourseResponseDTO;
 import com.github.lume.api.api.dto.lesson.LessonRequestDTO;
+import com.github.lume.api.api.dto.lesson.LessonResponseDTO;
 import com.github.lume.api.api.dto.module.ModuleRequestDTO;
+import com.github.lume.api.api.dto.module.ModuleResponseDTO;
 import com.github.lume.api.api.model.Course;
 import com.github.lume.api.api.model.Lesson;
 import com.github.lume.api.api.repository.CourseRepository;
 import com.github.lume.api.api.repository.LessonRepository;
 import com.github.lume.api.api.repository.ModuleRepository;
+import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import com.github.lume.api.api.model.Module;
 
@@ -27,7 +31,7 @@ public class CourseService {
     }
 
     public void create(CourseRequestDTO request) {
-        // valicacoes
+
         Course course = new Course();
         course.setName(request.name());
         course.setDescription(request.description());
@@ -35,15 +39,15 @@ public class CourseService {
         course.setWorkload(Integer.parseInt(request.workload()));
         course.setCover(request.cover());
 
-        course = courseRepository.save(course);
+        List<Module> modules = new ArrayList<>();
 
         for (ModuleRequestDTO moduleDTO : request.modules()) {
 
             Module module = new Module();
             module.setTitle(moduleDTO.title());
-            module.setCourse(course);
+            module.setCourse(course); // 🔥 FUNDAMENTAL
 
-            module = moduleRepository.save(module);
+            List<Lesson> lessons = new ArrayList<>();
 
             for (LessonRequestDTO lessonDTO : moduleDTO.lessons()) {
 
@@ -54,8 +58,41 @@ public class CourseService {
                 lesson.setFile(lessonDTO.file());
                 lesson.setModule(module);
 
-                lessonRepository.save(lesson);
+                lessons.add(lesson);
             }
+
+            module.setLessons(lessons);
+            modules.add(module);
         }
+
+        course.setModules(modules);
+
+        courseRepository.save(course);
+    }
+
+    public List<CourseResponseDTO> findAll() {
+        List<Course> courses = courseRepository.findAll();
+        return courses.stream()
+                .map(course -> new CourseResponseDTO(
+                        course.getId(),
+                        course.getName(),
+                        course.getDescription(),
+                        course.getEvaluation(),
+                        course.getWorkload(),
+                        course.getCover(),
+                        course.getModules().stream()
+                                .map(module -> new ModuleResponseDTO(
+                                        module.getId(),
+                                        module.getTitle(),
+                                        module.getLessons().stream()
+                                                .map(lesson -> new LessonResponseDTO(
+                                                        lesson.getId(),
+                                                        lesson.getName(),
+                                                        lesson.getDescription(),
+                                                        lesson.getUrl()
+                                                )).toList()
+                                )).toList()
+                ))
+                .toList();
     }
 }

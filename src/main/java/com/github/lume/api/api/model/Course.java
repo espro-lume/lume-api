@@ -38,7 +38,7 @@ public class Course {
     @JsonIgnore
     private List<User> users;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private List<Module> modules;
 
     public Course() {}
